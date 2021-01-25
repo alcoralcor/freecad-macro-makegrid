@@ -1,0 +1,30 @@
+from MakeGrid.Dialog import *
+from MakeGrid.Progress import Progress
+from MakeGrid.Grid import *
+
+import FreeCAD
+
+
+if __name__ == "__main__":
+    FreeCAD.Console.PrintMessage("Make Grid\n")
+
+    if FreeCAD.activeDocument():
+        grid_cylinder_dialog = Dialog()
+        grid_cylinder_dialog.dialog.show()
+        grid_cylinder_dialog.dialog.exec()
+        grid_cylinder_dialog.dialog.close()
+        if grid_cylinder_dialog.result() == QDialog.Accepted:
+            in_progress_dialog = Progress()
+            in_progress_dialog.dialog.show()
+            in_progress_dialog.dialog.open()
+            FreeCADGui.updateGui()
+            GridRenderer(grid_cylinder_dialog.matrix, grid_cylinder_dialog.grid).render()
+            in_progress_dialog.dialog.close()
+        elif grid_cylinder_dialog.result() == QDialog.Rejected:
+            FreeCAD.Console.PrintMessage("Operation cancelled by user.\n")
+        else:
+            FreeCAD.Console.PrintMessage("Abnormally cancelled operation.\n")
+
+    else:
+        FreeCAD.Console.PrintMessage("No active document!\n")
+        FreeCAD.Console.PrintMessage("Operation cancelled.\n")
